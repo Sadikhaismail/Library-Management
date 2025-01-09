@@ -12,6 +12,7 @@ const AdminRegister = () => {
   const [adminKey, setAdminKey] = useState(''); // Admin key input
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false); // New state for already registered user
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -21,7 +22,11 @@ const AdminRegister = () => {
       setSuccess(true); // Show success message
       setTimeout(() => navigate('/AdminLogin'), 2000); // Navigate to login after 2 seconds
     } catch (err) {
-      setError('User Already Exists');
+      if (err.response && err.response.data && err.response.data.message === 'User already exists') {
+        setAlreadyRegistered(true); // Set the state for already registered user
+      } else {
+        setError('Registration failed. Please try again.');
+      }
     }
   };
 
@@ -32,7 +37,7 @@ const AdminRegister = () => {
           width: '100%',
           height: '100vh',
           display: 'flex',
-          justifyContent: 'flex-start',
+          justifyContent: 'center',
           alignItems: 'center',
           backgroundImage: `url(${image})`,
           backgroundSize: 'cover',
@@ -46,21 +51,28 @@ const AdminRegister = () => {
       >
         <Box
           sx={{
-            maxWidth: 400,
-            padding: 5,
-            marginLeft: '110px',
-            backgroundColor: 'rgb(255, 255, 255)',
+            width: '100%',
+            maxWidth: '400px',
+            padding: 3,
+            backgroundColor: 'white',
             borderRadius: 2,
+            boxShadow: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            marginLeft:'-900px'
           }}
         >
-          <Typography variant="h5" gutterBottom>Admin Registration</Typography>
-          {error && <Typography color="error">{error}</Typography>}
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3, textShadow: '1px 1px 1px black'}}>
+            Admin Registration
+          </Typography>
+          {error && <Typography color="error" sx={{ marginBottom: 2 }}>{error}</Typography>}
           <TextField
             label="Name"
             fullWidth
             margin="normal"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            sx={{ marginBottom: 2 }}
           />
           <TextField
             label="Email"
@@ -68,6 +80,7 @@ const AdminRegister = () => {
             margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            sx={{ marginBottom: 2 }}
           />
           <TextField
             label="Password"
@@ -76,17 +89,17 @@ const AdminRegister = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            sx={{ marginBottom: 2 }}
           />
-          <div style={{ margin: '10px 0' }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-              />
-              Admin User
-            </label>
-          </div>
+          <Box sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+              style={{ marginRight: 8 }}
+            />
+            <Typography variant="body1">Admin User</Typography>
+          </Box>
           {isAdmin && (
             <TextField
               label="Admin Key"
@@ -95,6 +108,7 @@ const AdminRegister = () => {
               margin="normal"
               value={adminKey}
               onChange={(e) => setAdminKey(e.target.value)}
+              sx={{ marginBottom: 2 }}
             />
           )}
           <Button
@@ -106,6 +120,16 @@ const AdminRegister = () => {
           >
             Register
           </Button>
+
+          {/* Moved the already registered message below the register button */}
+          {alreadyRegistered && (
+            <Typography color="error" sx={{ marginTop: 2 }}>
+              This email is already registered. Please{' '}
+              <a href="/AdminLogin" className="login-link">
+                Login Here
+              </a>
+            </Typography>
+          )}
         </Box>
       </Box>
 
@@ -120,6 +144,19 @@ const AdminRegister = () => {
           Registration successful!
         </Alert>
       </Snackbar>
+
+      {/* CSS for link hover effect */}
+      <style jsx>{`
+        .login-link {
+          color: black;
+          text-decoration: none;
+          border-bottom: 2px solid transparent;
+          transition: border-bottom 0.3s ease;
+        }
+        .login-link:hover {
+          border-bottom: 2px solid black;
+        }
+      `}</style>
     </>
   );
 };

@@ -11,12 +11,13 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);  // State for current page
   const [totalPages, setTotalPages] = useState(1);  // State for total pages
   const [loading, setLoading] = useState(false);  // State for loading indicator
+  const [borrowedBooks, setBorrowedBooks] = useState([]);  // Track borrowed books
 
+  // Fetch books based on search query and current page
   useEffect(() => {
     const fetchBooks = debounce(async () => {
       setLoading(true);
       try {
-        // Fetch books based on the search query and current page, limiting to 3 per page
         const response = await Axios.get(`/books?search=${searchQuery}&page=${page}&limit=3`);
         setBooks(response.data.books || []);
         setTotalPages(response.data.totalPages || 1);
@@ -33,12 +34,27 @@ const Dashboard = () => {
     return () => fetchBooks.cancel();
   }, [searchQuery, page]);
 
-  // Function to handle borrowing a book
+  // Fetch borrowed books from localStorage when the component mounts
+  useEffect(() => {
+    const savedBorrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks')) || [];
+    setBorrowedBooks(savedBorrowedBooks);
+  }, []);  // Empty dependency array to fetch once when component mounts
+
+  // Handle borrowing a book
   const handleBorrow = async (bookId) => {
     try {
       await Axios.post(`/borrow/${bookId}`);
       alert('Book borrowed successfully!');
-      setBooks(books.map(book =>
+
+      // Update state
+      const updatedBorrowedBooks = [...borrowedBooks, bookId];
+      setBorrowedBooks(updatedBorrowedBooks);
+
+      // Save to localStorage
+      localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
+
+      // Update book status
+      setBooks((prevBooks) => prevBooks.map((book) =>
         book._id === bookId ? { ...book, borrowed: true } : book
       ));
     } catch (err) {
@@ -47,32 +63,43 @@ const Dashboard = () => {
     }
   };
 
-  // Function to handle returning a book
+  // Handle returning a book
   const handleReturn = async (bookId) => {
     try {
+      setLoading(true);
       await Axios.post(`/return/${bookId}`);
       alert('Book returned successfully!');
-      setBooks(books.map(book =>
+
+      // Remove from borrowed books
+      const updatedBorrowedBooks = borrowedBooks.filter(id => id !== bookId);
+      setBorrowedBooks(updatedBorrowedBooks);
+
+      // Save to localStorage
+      localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
+
+      // Update book status
+      setBooks((prevBooks) => prevBooks.map((book) =>
         book._id === bookId ? { ...book, borrowed: false } : book
       ));
     } catch (err) {
       console.error('Failed to return book', err.response ? err.response.data : err.message);
       alert('Failed to return book. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle the selection of a book from the suggestions
+  // Handle selection of a book from suggestions
   const handleBookSelect = (book) => {
     setSelectedBook(book); // Set selected book
-    setSearchQuery(book.title); // Set search query to the selected book's title
+    setSearchQuery(book.title); // Set search query to selected book's title
   };
 
   return (
     <Box sx={{ padding: 4 }}>
-
       {/* Profile Button */}
       <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
-        <Link to="/profile"> {/* Ensure proper link to the profile page */}
+        <Link to="/profile">
           <Button variant="contained" color="secondary">
             Profile
           </Button>
@@ -111,16 +138,17 @@ const Dashboard = () => {
             color="primary"
             sx={{ marginTop: 1 }}
             onClick={() => handleBorrow(selectedBook._id)}
-            disabled={selectedBook.borrowed}
+            disabled={selectedBook.borrowed || borrowedBooks.includes(selectedBook._id) || selectedBook.copiesAvailable === 0}
           >
-            {selectedBook.borrowed ? 'Borrowed' : 'Borrow'}
+            {selectedBook.borrowed || borrowedBooks.includes(selectedBook._id) || selectedBook.copiesAvailable === 0 ? 'No Copies Available' : 'Borrow'}
           </Button>
+
           <Button
             variant="outlined"
             color="secondary"
             sx={{ marginLeft: 1, marginTop: 1 }}
             onClick={() => handleReturn(selectedBook._id)}
-            disabled={!selectedBook.borrowed}
+            disabled={!borrowedBooks.includes(selectedBook._id) || loading}
           >
             Return
           </Button>
@@ -134,21 +162,26 @@ const Dashboard = () => {
               <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
                 <Typography variant="h6">{book.title}</Typography>
                 <Typography variant="body2" color="textSecondary">{book.author}</Typography>
+
+
                 <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ marginTop: 1 }}
-                  onClick={() => handleBorrow(book._id)}
-                  disabled={book.borrowed}
-                >
-                  {book.borrowed ? 'Borrowed' : 'Borrow'}
-                </Button>
+  variant="contained"
+  color="primary"
+  sx={{ marginTop: 1 }}
+  onClick={() => handleBorrow(book._id)}
+  disabled={book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0}  // Disabled if no copies are available
+>
+  {book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0 ? 'Borrowed' : 'Borrow'}  
+</Button>
+
+
+
                 <Button
                   variant="outlined"
                   color="secondary"
                   sx={{ marginLeft: 1, marginTop: 1 }}
                   onClick={() => handleReturn(book._id)}
-                  disabled={!book.borrowed}
+                  disabled={!borrowedBooks.includes(book._id) || loading}
                 >
                   Return
                 </Button>

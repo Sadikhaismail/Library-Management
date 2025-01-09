@@ -9,6 +9,8 @@ import UserProfile from './Components/UserProfile';
 import BookManagement from './Components/BookManagement';
 import AdminRegister from './Components/AdminRegistration';
 import AdminLogin from './Components/AdminLogin';
+import './index.css';
+
 
 const App = () => {
   return (

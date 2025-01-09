@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, CircularProgress } from '@mui/material';
 import Axios from '../Utils/Axios';
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);  // User details
-  const [borrowingHistory, setBorrowingHistory] = useState([]);  // User's borrowed books
-  const [loading, setLoading] = useState(false);  // Loading state for data fetching
+  const [user, setUser] = useState(null);
+  const [borrowingHistory, setBorrowingHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch user details and borrowing history
   useEffect(() => {
-    setLoading(true);
     const fetchUserData = async () => {
+      setLoading(true);
       try {
-        // Fetching user details
         const userResponse = await Axios.get('/users/profile');
         setUser(userResponse.data);
-        console.log('User Data:', userResponse.data); // Log user data to ensure it's being fetched
 
-        // Fetching borrowing history
-        const historyResponse = await Axios.get('http://127.0.0.1:5000/api/borrow/history'); // Corrected API endpoint
-        setBorrowingHistory(historyResponse.data.history); // Update based on API response format
-        console.log('Borrowing History:', historyResponse.data.history); // Log borrowing history to ensure it's fetched correctly
+        const historyResponse = await Axios.get('/borrow/history');
+        setBorrowingHistory(historyResponse.data.history);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        alert('Failed to load user data.');
+        console.error('Error fetching user data:', error);
+        alert('Error loading user profile.');
       } finally {
         setLoading(false);
       }
@@ -32,53 +26,63 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-  // Render Profile and Borrowing History
   return (
-    <Box sx={{ padding: 4 }}>
-      <Typography variant="h5" gutterBottom>User Profile</Typography>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">User Profile</h1>
       {loading ? (
-        <CircularProgress />
+        <div className="flex justify-center items-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+        </div>
+        
       ) : (
         <>
-          {/* User Details Section */}
-          <Box sx={{ marginBottom: 4 }}>
-            <Typography variant="h6">Profile Information</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography>Name: {user?.name}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Email: {user?.email}</Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Borrowing History Section */}
-          <Box>
-            <Typography variant="h6">Borrowing History</Typography>
-            {borrowingHistory.length > 0 ? (
-              <Grid container spacing={2}>
-                {borrowingHistory.map((borrowedBook, index) => (
-                  <Grid item xs={12} sm={6} key={index}>
-                    <Box sx={{ border: '1px solid #ddd', padding: 2, borderRadius: 2 }}>
-                      <Typography variant="h6">{borrowedBook.book.title}</Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Borrowed on: {new Date(borrowedBook.borrowedAt).toLocaleDateString()}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Return by: {new Date(borrowedBook.returnDate).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              <Typography>No borrowing history available.</Typography>
-            )}
-          </Box>
+          {user && (
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Profile Information</h2>
+              <p className="text-gray-700">Name: {user.name}</p>
+              <p className="text-gray-700">Email: {user.email}</p>
+            </div>
+          )}
+          <h2 className="text-xl font-semibold mb-4">Borrowing History</h2>
+          {borrowingHistory.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {borrowingHistory.map((record) => (
+                <div
+                  key={record._id}
+                  className="border border-gray-300 rounded-lg p-4 shadow-sm"
+                >
+                  <h3 className="text-lg font-semibold mb-2">
+                    {record.book?.title || 'Unknown Title'}
+                  </h3>
+                  <p className="text-gray-600 font-bold">
+                    Author: <span className="font-bold">{record.book?.author || 'Unknown Author'}</span>
+                  </p>
+                  <p className="text-gray-600 font-bold">
+                    Borrowed on: {new Date(record.borrowedAt).toLocaleDateString()}
+                  </p>
+                  <p className="text-brown-600 font-bold">
+                    Return by: {new Date(record.returnDate).toLocaleDateString()}
+                  </p>
+                  {record.returnedDate ? (
+                    <p className="text-green-600 font-bold">
+                      Returned on: {new Date(record.returnedDate).toLocaleDateString()}
+                    </p>
+                  ) : (
+                    <p className="text-red-500 font-medium">Not Returned</p>
+                  )}
+                  {!record.returnedDate && new Date(record.returnDate) < new Date() && (
+                    <p className="text-red-500 font-medium">Due Date Exceeded</p>
+                  )}
+                </div>
+                
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No borrowing history available.</p>
+          )}
         </>
       )}
-    </Box>
+    </div>
   );
 };
 

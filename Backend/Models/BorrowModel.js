@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const borrowingSchema = mongoose.Schema(
@@ -20,6 +19,9 @@ const borrowingSchema = mongoose.Schema(
     returnDate: {
       type: Date,
       required: true,
+    },
+    returnedDate: {
+      type: Date, // Store the actual date the book was returned
     },
     returned: {
       type: Boolean,

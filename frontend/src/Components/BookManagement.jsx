@@ -109,6 +109,36 @@ const BookManagement = () => {
     }
   };
 
+  // Handle borrow action
+  const handleBorrowBook = async (bookId) => {
+    try {
+      const book = books.find((book) => book._id === bookId);
+      if (book.copiesAvailable > 0) {
+        // Perform the borrowing action
+        await Axios.put(`/books/borrow/${bookId}`);
+        setBooks(books.map((book) => (book._id === bookId ? { ...book, copiesAvailable: book.copiesAvailable - 1 } : book)));
+        showSnackbar('Book borrowed successfully!');
+      } else {
+        showSnackbar('No copies available for borrowing.', 'error');
+      }
+    } catch (err) {
+      console.error('Failed to borrow book', err);
+      showSnackbar('Failed to borrow book. Please try again.', 'error');
+    }
+  };
+
+  // Handle return action
+  const handleReturnBook = async (bookId) => {
+    try {
+      await Axios.put(`/books/return/${bookId}`);
+      setBooks(books.map((book) => (book._id === bookId ? { ...book, copiesAvailable: book.copiesAvailable + 1 } : book)));
+      showSnackbar('Book returned successfully!');
+    } catch (err) {
+      console.error('Failed to return book', err);
+      showSnackbar('Failed to return book. Please try again.', 'error');
+    }
+  };
+
   // Open the dialog for create or update
   const handleOpenDialog = (type, book = null) => {
     setDialogType(type);
@@ -160,6 +190,7 @@ const BookManagement = () => {
                   <Typography variant="body2" color="textSecondary">{book.author}</Typography>
                   <Typography variant="body2" color="textSecondary">{book.genre}</Typography>
                   <Typography variant="body2" color="textSecondary">{book.year}</Typography>
+                  <Typography variant="body2" color="textSecondary">Copies Available: {book.copiesAvailable}</Typography>
 
                   {isAdmin && (
                     <Box sx={{ marginTop: 1 }}>
@@ -177,6 +208,27 @@ const BookManagement = () => {
                         onClick={() => handleDeleteBook(book._id)}
                       >
                         Delete
+                      </Button>
+                    </Box>
+                  )}
+
+                  {!isAdmin && (
+                    <Box sx={{ marginTop: 1 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleBorrowBook(book._id)}
+                        disabled={book.copiesAvailable <= 0}
+                      >
+                        Borrow
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleReturnBook(book._id)}
+                        sx={{ marginLeft: 1 }}
+                      >
+                        Return
                       </Button>
                     </Box>
                   )}
