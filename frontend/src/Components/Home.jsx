@@ -1,32 +1,32 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link
-import image from './image.png'; // Adjust the path if necessary
+import { useNavigate, Link } from 'react-router-dom'; 
+import image from './image.png'; 
 
 const Home = () => {
   const navigate = useNavigate();
 
   const styles = {
     home: {
-      width: '100%',  // Ensures the width is full screen
-      height: '100vh',  // Ensures the height takes up the entire screen
+      width: '100%',  
+      height: '100vh',  
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundImage: `url(${image})`,  // Background image
-      backgroundSize: 'cover',  // Ensures the image covers the entire container
-      backgroundPosition: 'center',  // Centers the image
-      backgroundRepeat: 'no-repeat',  // Prevents image repetition
-      position: 'absolute',  // Allows the background to stretch properly
+      backgroundImage: `url(${image})`,  
+      backgroundSize: 'cover', 
+      backgroundPosition: 'center', 
+      backgroundRepeat: 'no-repeat',  
+      position: 'absolute', 
       top: '0',
       left: '0',
-      zIndex: '-1',  // Ensures the background image stays behind the content
+      zIndex: '-1',  
     },
     overlay: {
       padding: '40px',
       textAlign: 'center',
       borderRadius: '10px',
       color: 'white',
-      position: 'relative',  // Ensures the overlay sits above the background
+      position: 'relative',  
     },
     title: {
       fontSize: '2.5rem',
@@ -102,9 +102,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Link to Book Management */}
       <Link
-        to="/Admin"  // Add the correct route for book management
+        to="/Admin"  
         style={styles.bookManagementLink}
         onMouseOver={(e) => (e.target.style.backgroundColor = styles.bookManagementLinkHover.backgroundColor)}
         onMouseOut={(e) => (e.target.style.backgroundColor = styles.bookManagementLink.backgroundColor)}

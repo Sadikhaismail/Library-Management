@@ -1,31 +1,47 @@
-import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Snackbar, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Axios from '../Utils/Axios';
-import image from './imagecopy.png'; // Background image
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Axios from "../Utils/Axios";
+import image from "./imagecopy.png";
 
 const AdminRegister = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false); // Admin flag
-  const [adminKey, setAdminKey] = useState(''); // Admin key input
-  const [error, setError] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminKey, setAdminKey] = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false); // New state for already registered user
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
-      // Send registration data along with the admin key if applicable
-      await Axios.post('/users/register', { name, email, password, isAdmin, adminKey });
-      setSuccess(true); // Show success message
-      setTimeout(() => navigate('/AdminLogin'), 2000); // Navigate to login after 2 seconds
+      await Axios.post("/users/register", {
+        name,
+        email,
+        password,
+        isAdmin,
+        adminKey,
+      });
+      setSuccess(true);
+      setTimeout(() => navigate("/AdminLogin"), 2000);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message === 'User already exists') {
-        setAlreadyRegistered(true); // Set the state for already registered user
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.message === "User already exists"
+      ) {
+        setAlreadyRegistered(true);
       } else {
-        setError('Registration failed. Please try again.');
+        setError("Registration failed. Please try again.");
       }
     }
   };
@@ -34,38 +50,50 @@ const AdminRegister = () => {
     <>
       <Box
         sx={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           backgroundImage: `url(${image})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          zIndex: '-1',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          zIndex: "-1",
         }}
       >
         <Box
           sx={{
-            width: '100%',
-            maxWidth: '400px',
+            width: "100%",
+            maxWidth: "400px",
             padding: 3,
-            backgroundColor: 'white',
+            backgroundColor: "white",
             borderRadius: 2,
             boxShadow: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            marginLeft:'-900px'
+            display: "flex",
+            flexDirection: "column",
+            marginLeft: "-900px",
           }}
         >
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', marginBottom: 3, textShadow: '1px 1px 1px black'}}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{
+              fontWeight: "bold",
+              marginBottom: 3,
+              textShadow: "1px 1px 1px black",
+            }}
+          >
             Admin Registration
           </Typography>
-          {error && <Typography color="error" sx={{ marginBottom: 2 }}>{error}</Typography>}
+          {error && (
+            <Typography color="error" sx={{ marginBottom: 2 }}>
+              {error}
+            </Typography>
+          )}
           <TextField
             label="Name"
             fullWidth
@@ -91,7 +119,7 @@ const AdminRegister = () => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ marginBottom: 2 }}
           />
-          <Box sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ marginBottom: 2, display: "flex", alignItems: "center" }}>
             <input
               type="checkbox"
               checked={isAdmin}
@@ -121,31 +149,42 @@ const AdminRegister = () => {
             Register
           </Button>
 
-          {/* Moved the already registered message below the register button */}
           {alreadyRegistered && (
-            <Typography color="error" sx={{ marginTop: 2 }}>
-              This email is already registered. Please{' '}
-              <a href="/AdminLogin" className="login-link">
+            <div
+              className="mt-2 text-red-500"
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+              }}
+            >
+              Already registered? Please{" "}
+              <a
+                href="/AdminLogin"
+                className="text-black border-b-2 border-transparent hover:border-black transition-colors duration-300"
+                style={{ textDecoration: "none" }}
+              >
                 Login Here
               </a>
-            </Typography>
+            </div>
           )}
         </Box>
       </Box>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={success}
         autoHideDuration={3000}
         onClose={() => setSuccess(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           Registration successful!
         </Alert>
       </Snackbar>
 
-      {/* CSS for link hover effect */}
       <style jsx>{`
         .login-link {
           color: black;

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Snackbar, Alert, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Axios from '../Utils/Axios';
-import image from './imagecopy.png'; // Renamed image file
+import image from './imagecopy.png'; 
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false); // For success message
+  const [success, setSuccess] = useState(false); 
   const navigate = useNavigate();
   
 
   const handleRegister = async () => {
     try {
       await Axios.post('/users/register', { name, email, password });
-      setSuccess(true); // Show success message
-      setTimeout(() => navigate('/login'), 2000); // Navigate to login after 2 seconds
+      setSuccess(true); 
+      setTimeout(() => navigate('/login'), 2000); 
     } catch (err) {
       setError('User Already Exist');
     }
@@ -30,7 +30,7 @@ const Register = () => {
           width: '100%',
           height: '100vh',
           display: 'flex',
-          justifyContent: 'flex-start', // Aligns the box to the left
+          justifyContent: 'flex-start', 
           alignItems: 'center',
           backgroundImage: `url(${image})`,
           backgroundSize: 'cover',
@@ -46,7 +46,7 @@ const Register = () => {
           sx={{
             maxWidth: 400,
             padding: 5,
-            marginLeft: '110px', // Adds some space from the left edge
+            marginLeft: '110px',
             backgroundColor: 'rgb(255, 255, 255)',
             borderRadius: 2,
           }}
@@ -84,13 +84,19 @@ const Register = () => {
           >
             Register
           </Button>
+          
+          <Typography variant="body2" sx={{ marginTop: 2, textAlign: 'center' }}>
+            Already registered?{' '}
+            <Link href="/login" underline="hover">
+              Login here
+            </Link>
+          </Typography>
         </Box>
       </Box>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={success}
-        autoHideDuration={3000} // Snackbar disappears after 3 seconds
+        autoHideDuration={2000} 
         onClose={() => setSuccess(false)}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >

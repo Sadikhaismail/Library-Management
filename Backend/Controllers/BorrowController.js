@@ -2,6 +2,8 @@ const Borrowing = require('../Models/BorrowModel');
 const Book = require('../Models/BookModel');
 const User = require('../Models/UserModel');
 
+
+//////borrow book.....///////
 exports.borrowBook = async (req, res) => {
   const { bookId } = req.params;
 
@@ -36,7 +38,7 @@ exports.borrowBook = async (req, res) => {
   }
 };
 
-
+///return book//////
 exports.returnBook = async (req, res) => {
   const { bookId } = req.params;
 
@@ -70,7 +72,7 @@ exports.returnBook = async (req, res) => {
 
 
 
-
+////borrowing history///////
 exports.getBorrowingHistory = async (req, res) => {
   try {
     const history = await Borrowing.find({ user: req.user._id })

@@ -10,10 +10,10 @@ const { protect, isAdmin } = require('../Controllers/UserController');
 
 const router = express.Router();
 
-router.post('/books', protect, isAdmin, createBook);
+router.post('/books', protect, createBook);
 router.get('/books', listBooks);
 router.get('/books/search', searchBooks);
-router.put('/books/:id', protect, isAdmin, updateBook);
-router.delete('/books/:id', protect, isAdmin, deleteBook);
+router.put('/books/:id', protect,  updateBook);
+router.delete('/books/:id', protect,  deleteBook);
 
 module.exports = router;

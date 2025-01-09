@@ -5,15 +5,14 @@ import Axios from '../Utils/Axios';
 import { debounce } from 'lodash';
 
 const Dashboard = () => {
-  const [books, setBooks] = useState([]);  // State for storing books
-  const [searchQuery, setSearchQuery] = useState('');  // State for search query
-  const [selectedBook, setSelectedBook] = useState(null); // To track selected book
-  const [page, setPage] = useState(1);  // State for current page
-  const [totalPages, setTotalPages] = useState(1);  // State for total pages
-  const [loading, setLoading] = useState(false);  // State for loading indicator
-  const [borrowedBooks, setBorrowedBooks] = useState([]);  // Track borrowed books
+  const [books, setBooks] = useState([]);  
+  const [searchQuery, setSearchQuery] = useState('');  
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [page, setPage] = useState(1);  
+  const [totalPages, setTotalPages] = useState(1);  
+  const [loading, setLoading] = useState(false);  
+  const [borrowedBooks, setBorrowedBooks] = useState([]);  
 
-  // Fetch books based on search query and current page
   useEffect(() => {
     const fetchBooks = debounce(async () => {
       setLoading(true);
@@ -34,26 +33,21 @@ const Dashboard = () => {
     return () => fetchBooks.cancel();
   }, [searchQuery, page]);
 
-  // Fetch borrowed books from localStorage when the component mounts
   useEffect(() => {
     const savedBorrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks')) || [];
     setBorrowedBooks(savedBorrowedBooks);
-  }, []);  // Empty dependency array to fetch once when component mounts
+  }, []);  
 
-  // Handle borrowing a book
   const handleBorrow = async (bookId) => {
     try {
       await Axios.post(`/borrow/${bookId}`);
       alert('Book borrowed successfully!');
 
-      // Update state
       const updatedBorrowedBooks = [...borrowedBooks, bookId];
       setBorrowedBooks(updatedBorrowedBooks);
 
-      // Save to localStorage
       localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
 
-      // Update book status
       setBooks((prevBooks) => prevBooks.map((book) =>
         book._id === bookId ? { ...book, borrowed: true } : book
       ));
@@ -63,21 +57,17 @@ const Dashboard = () => {
     }
   };
 
-  // Handle returning a book
   const handleReturn = async (bookId) => {
     try {
       setLoading(true);
       await Axios.post(`/return/${bookId}`);
       alert('Book returned successfully!');
 
-      // Remove from borrowed books
       const updatedBorrowedBooks = borrowedBooks.filter(id => id !== bookId);
       setBorrowedBooks(updatedBorrowedBooks);
 
-      // Save to localStorage
       localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
 
-      // Update book status
       setBooks((prevBooks) => prevBooks.map((book) =>
         book._id === bookId ? { ...book, borrowed: false } : book
       ));
@@ -89,15 +79,13 @@ const Dashboard = () => {
     }
   };
 
-  // Handle selection of a book from suggestions
   const handleBookSelect = (book) => {
-    setSelectedBook(book); // Set selected book
-    setSearchQuery(book.title); // Set search query to selected book's title
+    setSelectedBook(book); 
+    setSearchQuery(book.title); 
   };
 
   return (
     <Box sx={{ padding: 4 }}>
-      {/* Profile Button */}
       <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
         <Link to="/profile">
           <Button variant="contained" color="secondary">
@@ -169,7 +157,7 @@ const Dashboard = () => {
   color="primary"
   sx={{ marginTop: 1 }}
   onClick={() => handleBorrow(book._id)}
-  disabled={book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0}  // Disabled if no copies are available
+  disabled={book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0}  
 >
   {book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0 ? 'Borrowed' : 'Borrow'}  
 </Button>

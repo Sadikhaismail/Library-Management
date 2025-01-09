@@ -21,7 +21,7 @@ const borrowingSchema = mongoose.Schema(
       required: true,
     },
     returnedDate: {
-      type: Date, // Store the actual date the book was returned
+      type: Date, 
     },
     returned: {
       type: Boolean,
