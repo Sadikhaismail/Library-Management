@@ -89,9 +89,9 @@ const Register = () => {
           
           <Typography variant="body2" sx={{ marginTop: 2, textAlign: 'center' }}>
             Already registered?{' '}
-            <Link href="/login" underline="hover">
-              Login here
-            </Link>
+            <Link to="/login" underline="hover">
+  Login here
+</Link>
           </Typography>
         </Box>
       </Box>
