@@ -97,7 +97,7 @@ const AdminLogin = () => {
           <div className="mt-4 text-center">
             <Typography variant="body2">
               Not registered?{' '}
-              <<Link
+              <Link
                   component="button"
                   onClick={() => navigate("/login")} className="text-blue-500 hover:underline">
                 Register here
