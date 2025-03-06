@@ -159,13 +159,14 @@ const AdminRegister = () => {
               }}
             >
               Already registered? Please{" "}
-              <a
-                href="/AdminLogin"
+              <Link
+                  component="button"
+                  onClick={() => navigate("/login")}
                 className="text-black border-b-2 border-transparent hover:border-black transition-colors duration-300"
                 style={{ textDecoration: "none" }}
               >
                 Login Here
-              </a>
+             </Link>
             </div>
           )}
         </Box>
