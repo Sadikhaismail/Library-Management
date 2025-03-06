@@ -82,9 +82,13 @@ const Login = () => {
 
           <Typography variant="body2" sx={{ marginTop: 2, textAlign: 'center' }}>
             Not registered?{' '}
-            <Link href="/register" underline="hover">
-              Register here
-            </Link>
+             <Link
+                  component="button"
+                  onClick={() => navigate("/login")}
+                  underline="hover"
+                >
+                  Registerhere
+                </Link>
           </Typography>
         </Box>
       </Box>
