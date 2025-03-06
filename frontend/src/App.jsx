@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {  Routes, Route } from 'react-router-dom';
 import { Container } from '@mui/material';
 import Home from './Components/Home'; 
 import Dashboard from './Components/Dashboard';
@@ -13,7 +13,7 @@ import AdminLogin from './Components/AdminLogin';
 
 const App = () => {
   return (
-    <Router>
+    
       <Container maxWidth="md">
         <Routes>
           <Route path="/" element={<Home />} /> 
@@ -29,8 +29,7 @@ const App = () => {
 
         </Routes>
       </Container>
-      </Router>
-    
+   
   );
 };
 
