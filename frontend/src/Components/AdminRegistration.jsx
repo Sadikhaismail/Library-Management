@@ -161,7 +161,7 @@ const AdminRegister = () => {
               Already registered? Please{" "}
               <Link
                   component="button"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/AdminLogin")}
                 className="text-black border-b-2 border-transparent hover:border-black transition-colors duration-300"
                 style={{ textDecoration: "none" }}
               >
