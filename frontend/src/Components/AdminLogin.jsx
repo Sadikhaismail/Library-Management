@@ -99,7 +99,7 @@ const AdminLogin = () => {
               Not registered?{' '}
               <Link
                   component="button"
-                  onClick={() => navigate("/login")} className="text-blue-500 hover:underline">
+                  onClick={() => navigate("/Admin")} className="text-blue-500 hover:underline">
                 Register here
               </Link>
             </Typography>
