@@ -6,3 +6,4 @@ router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
  
 module.exports = router;
+ 
