@@ -24,6 +24,7 @@ useEffect(() => {
 }, [currentPage]);
 
 
+
 const fetchBooks = async (page = 1) => {
   try {
     const response = await API.get(`api/books?page=${page}`);
@@ -95,9 +96,7 @@ const fetchBooks = async (page = 1) => {
     setEditBookId(null);
   };
 
-  useEffect(() => {
-    fetchBooks();
-  }, []);
+
 
   return (
     <div className="max-w-4xl mx-auto mt-10">
