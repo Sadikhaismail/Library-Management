@@ -145,6 +145,7 @@ const Dashboard = () => {
             label="Search Books"
             fullWidth
             margin="normal"
+            sx={{ marginBottom: 2 }} // Added marginBottom here to create space
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -192,42 +193,37 @@ const Dashboard = () => {
       ) : displayedBooks.length === 0 ? (
         <Typography>No books found.</Typography>
       ) : (
-        <Grid 
-        container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
-{displayedBooks.map((book) => (
-  <Grid
-    key={book._id}
-    gridColumn={{ xs: 'span 4', sm: 'span 4', md: 'span 4' }}
-  >
-    <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
-      <Typography variant="h6">{book.title}</Typography>
-      <Typography variant="body2" color="textSecondary">{book.author}</Typography>
+        <Grid container spacing={3} columns={{ xs: 4, sm: 8, md: 12 }}>
+          {displayedBooks.map((book) => (
+            <Grid key={book._id} item xs={4} sm={4} md={4}>
+              <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 2 }}>
+                <Typography variant="h6">{book.title}</Typography>
+                <Typography variant="body2" color="textSecondary">{book.author}</Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ marginTop: 1 }}
-        onClick={() => handleBorrow(book._id)}
-        disabled={book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0}
-      >
-        {book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0
-          ? 'Borrowed'
-          : 'Borrow'}
-      </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginTop: 1 }}
+                  onClick={() => handleBorrow(book._id)}
+                  disabled={book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0}
+                >
+                  {book.borrowed || borrowedBooks.includes(book._id) || book.availableCopies <= 0
+                    ? 'Borrowed'
+                    : 'Borrow'}
+                </Button>
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        sx={{ marginLeft: 1, marginTop: 1 }}
-        onClick={() => handleReturn(book._id)}
-        disabled={!borrowedBooks.includes(book._id) || loading}
-      >
-        Return
-      </Button>
-    </Box>
-  </Grid>
-))}
-
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ marginLeft: 1, marginTop: 1 }}
+                  onClick={() => handleReturn(book._id)}
+                  disabled={!borrowedBooks.includes(book._id) || loading}
+                >
+                  Return
+                </Button>
+              </Box>
+            </Grid>
+          ))}
         </Grid>
       )}
 
