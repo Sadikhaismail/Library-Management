@@ -3,7 +3,7 @@ import API from "../Api";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-function App() {
+function BookManagement() {
   const [books, setBooks] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -328,4 +328,4 @@ const fetchBooks = async (page = 1) => {
   );
 }
 
-export default App;
+export default BookManagement;
